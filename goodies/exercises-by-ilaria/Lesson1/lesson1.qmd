@@ -1,0 +1,353 @@
+---
+title: "Introducing R, R studio & Quarto"
+subtitle: "Lesson 1" 
+author: "Ilaria Venagli (PhD), Dr. Massimiliano Canzi"
+format: revealjs
+output: 
+  revealjs:
+    transition-speed: fast
+    transition: fade
+    background-transition: fade
+    chalkboard: true
+    slide-number: true
+    show-slide-number: print
+    touch: true
+    controls: true
+    incremental: true
+fontsize: 11pt
+---
+
+## Today's content
+
+-   Introducing R and R studio
+-   Introducing Quarto
+-   Chapter 0 and 1: Summary & Questions
+-   Getting ready for next week
+
+## Important information
+
+### Tutorial materials
+
+-   **Slides** and/or **.qmd / .html** files are uploaded weekly on Discord;
+
+-   I will also provide you with weekly exercises, which are entirely optional but highly recommended. You are more than welcome to submit your completed exercises to me for feedback 😃
+
+------------------------------------------------------------------------
+
+### Office hours
+
+-   ⏰ **Thursdays**, 2:30 - 3:30 pm, Discord
+
+-   If you cannot attend the Thursday's office hour, you can always **get in touch via e-mail** or on **Discord** to schedule a meeting
+
+-   📧 **email**: ilaria.venagli\@uni-konstanz.de
+
+-   📍 **room**: G127
+
+## Short survey
+
+-   Please click on the link in the chat and answer this 5-multiple-choice-question survey!
+
+-   **Link**: https://forms.gle/xmZD9UFDGKjKyEhG8
+
+-   Then... let's have a look at your answers! 📊
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: FALSE
+library(unikn)
+library(tidyverse)
+library(kableExtra)
+theme_set(theme_unikn()) #set default theme for ggplot
+# options for tables 
+bs_style <- c("striped", "hover", "condensed", "responsive")
+options(kable_styling_bootstrap_options = bs_style)
+```
+
+```{r}
+#| echo: FALSE
+#| message: FALSE
+read_csv("survey1.csv") %>% 
+  janitor::clean_names() %>% 
+  dplyr::select(2:6) %>% 
+  rename(
+    linguistics = i_study_or_have_studied_linguistics,
+    download = i_have_successfully_downloaded_r_and_r_studio
+) -> df 
+gather(df, "question", "answer", 1:5) -> df 
+```
+
+```{r}
+#| echo: FALSE
+#| message: FALSE
+df %>% 
+  filter(question %in% c("statistics_knowledge", "r_knowledge")) %>% 
+  group_by(question) %>% 
+  ggplot(aes(x = question, fill = answer)) + 
+  geom_bar(position = position_dodge(), stat = "count", alpha = 0.8) + 
+  scale_fill_manual(values = c("#54BFB7", "#9CC6CF", "#6AAAB7", "#A54D69", "#FEA090", "#FECFC7")) + 
+  xlab("question") + ylab("answer") + ggtitle("Statistics and R knowledge")
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: FALSE
+#| message: FALSE
+df %>% 
+  filter(question %in% c("course")) %>% 
+  group_by(question) %>% 
+  ggplot(aes(x = question, fill = answer)) + 
+  geom_bar(position = position_dodge(), stat = "count", width = 0.2, alpha = 0.5) + 
+  scale_fill_manual(values = c("#009ad1", "#FEA090", "#a0d3e6", "#54BFB7", "#e5e5e5")) + 
+  xlab("question") + ylab("answer") + ggtitle("Your courses")
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: FALSE
+#| message: FALSE 
+df %>% 
+  filter(question %in% c("linguistics")) %>% 
+  group_by(question) %>% 
+  ggplot(aes(x = question, fill = answer)) + 
+  geom_bar(position = position_dodge(), width = 0.2, alpha = 0.8) + 
+  scale_fill_manual(values = c("#FEA090", "#54BFB7")) + 
+  xlab("question") + ylab("answer") + ggtitle("Are you studying linguistics?")
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: FALSE 
+#| message: FALSE 
+
+df %>% 
+  filter(question %in% c("download")) %>% 
+  group_by(question) %>% 
+  ggplot(aes(x = question, fill = answer)) + 
+  geom_bar(position = position_dodge(), width = 0.2, alpha = .8) + 
+  scale_fill_manual(values = c("#FEA090", "#54BFB7")) + 
+  xlab("question") + ylab("answer") + ggtitle("Download R and R studio")
+```
+
+# Introducing Quarto
+
+------------------------------------------------------------------------
+
+### Create and edit a Quarto document
+
+-   Creating a Quarto document is easy. Just follow these steps:
+
+1.  Open **R studio**
+2.  Click on "**new file**" and select "**Quarto document**"
+3.  Set your title, subtitle, output (normally **html**, but also pdf) etc.
+
+Your should get something like this:
+
+------------------------------------------------------------------------
+
+![](image1.png)
+
+------------------------------------------------------------------------
+
+### Getting started
+
+1.  ⚠️ **CREATE A FOLDER INCLUDING YOUR .CSV/.XLSX FILES, TOGETHER WITH YOUR .QMD FILE**.
+
+::: {style="font-size: 28px"}
+-   If you store your files in the same folder, then you do not have to set any directory, and uploading your data to work in R will be very very easy!
+:::
+
+2.  **Install the necessary packages / load the libraries**:
+
+::: {style="font-size: 28px"}
+-   Every time you open an R file, you always need to **load libraries**\
+-   The first time, you might need to **install** packages
+:::
+
+------------------------------------------------------------------------
+
+3.  Try to install **tidyverse**, which we will be using from next week!
+
+```{r, eval = FALSE, echo = TRUE}
+
+# install a new package: 
+install.packages("tidyverse")
+
+# load the library: 
+library(tidyverse)
+
+# upload your .csv file (IFF stored in the same folder)
+read_csv("name_file.csv") -> df 
+
+# the "->" is needed to assign a name to the data. 
+# You can also use it the other way around. 
+# Let's see an example. Here, I am uploading an Excel file
+
+library(readxl)
+df1 <- readxl::read_excel("name_file.xlsx")
+```
+
+------------------------------------------------------------------------
+
+### Text formatting in Quarto
+
+-   **Bold** (add \*\* before and after the word/sentence)
+-   *Italics* (add \* before and after the word/sentence)
+-   Section title: use \## before the title
+-   Subsection title: use \### before the title etc.
+
+------------------------------------------------------------------------
+
+### Chunk options
+
+::: {style="font-size: 28px"}
+-   For the final assignment, you will need to write a analysis report / short paper using R studio.
+-   The assigment will be submitted as a HTML or PDF document
+-   Please remember that **the appearance of the HTML document**, including its structure and the selective display of relevant codes and outputs and **analysis chunks**, **will be taken into account for the final evaluation**. For example, we do **not** need to see the code that you wrote to produce a plot, we do **not** need to see the printout of the dataset, but **we DO NEED** to see the code you will use to build up the models.
+:::
+
+------------------------------------------------------------------------
+
+### Chunk options (cont.)
+
+All chunk options are **TRUE** by default.
+
+::: {style="font-size: 28px"}
+a.  **echo = FALSE**: The chunk is **not displayed** in the knitted document
+
+b.  **eval = FALSE**: The chunk is **not run** but displayed in the knitted document;
+
+c.  **include = FALSE**: The chunk is **neither run nor displayed** in the knitted document;
+
+d.  **message = FALSE**: The message is not displayed in the knitted document (this should always be set up once you've made sure all chunks run correctly);
+
+e.  **warning = FALSE**: Errors are not displayed in the knitted document.
+:::
+
+![](image2.png)
+
+------------------------------------------------------------------------
+
+## Chapter 0 & 1: Take home
+
+1.  **WHY TIDYVERSE**?
+
+::: {style="font-size: 24px"}
+Tidyverse provides **easier alternatives** than base R, e.g.,
+
+-   say you want to create a NEW column (z) in your dataset which is the sum of the columns x and y. While in base R you need to "call" the dataset (df) three times, in tidyverse you only do it once (df %\>% ), and you use the function **mutate()**, as you are indeed mutating the original df.
+
+```{r, eval = FALSE, echo = TRUE}
+# create a new column in base R vs. tidyverse
+
+# base R 
+df$z <- df$x + df$y
+
+# tidyverse
+df %>% mutate(z = x+y)
+```
+
+-   another example is filtering. Say that you want to filter values \>= 0.5 in the y column:
+
+```{r, eval = FALSE, echo = TRUE}
+# Filter values in the y column that are >= 0.5
+
+# base R
+df_new <- df[df$y >= 0.5, ]
+
+# tidyverse
+df %>% filter(y >= 0.5) -> df_new
+
+```
+:::
+
+------------------------------------------------------------------------
+
+## Chapter 0 & 1: Take home (cont.)
+
+2.  **WHAT IS THE GOAL OF THIS SEMINAR**?
+
+-   The goal of this seminar is to help you learn how to **get meaning from data** (Winter, p.2)
+
+-   You will learn how to:
+
+::: {style="font-size: 30px"}
+
+- Prepare the data for an analysis (preprocessing)
+- Formulate hypotheses and predictions 
+- Test your hypotheses and predictions 
+
+**Remember**: Descriptive analyses are okay only for the purpose to explore your data. In the assignment, you will be asked to build up statistical models, thus we will learn how to do **inferential statistics**! 
+    
+:::
+
+------------------------------------------------------------------------
+
+## Chapter 0 & 1: Take home (cont.)
+
+2.  **IMPORTANT DEFINITIONS**
+
+::: {style="font-size: 40px"}
+
+a. **Function** (e.g., filter(), mutate(), summarize(), etc.)
+
+b. **Variable** (the name that refers to a value or object)
+- You assign variables with **->** or **<-**
+
+```{r, eval = FALSE, echo = TRUE}
+x <- 1
+2 -> y 
+```
+
+:::
+
+------------------------------------------------------------------------
+2.  **IMPORTANT DEFINITIONS (cont.)**
+
+::: {style="font-size: 30px"}
+
+c. **Vector** (a collection of elements of the same data type, arranged in a specific order)
+
+```{r, echo = TRUE}
+# 1. Try to construct a dataframe with the columns "name" and "age", and call it "df" 
+
+tibble(name = c("Ilaria", "Laura", "Massimiliano", "Kaye", "Mary", "Mark"),
+       age = c(28, 28, 31, 25, 23, 21)) -> df
+
+# 2. Now "print" df (by typing and running it) and check the type of variable
+head(df) 
+# name: <chr>, it treated as a "character" vector 
+# age: <dbl> is treated as "double" vector 
+```
+
+:::
+
+
+## Getting ready for next week
+
+- Exercises chapter 1 
+- Read chapter 2 (tidyverse)
+- Install the following packages: 
+
+```{r, eval = FALSE, echo = TRUE}
+library(tidyverse)
+library(janitor)
+library(kableExtra)
+library(dlookr) 
+```
+
+- Try to write a code to count the number of participants in the dataframe **homework.csv**, as well as the mean age of the sample: 
+
+```{r, message= FALSE, echo = T}
+read_csv("homework.csv") -> homework
+```
+
+## Some suggestions
+
+- Try to practice what we learn in class with data that you know well (e.g., data collected for your thesis; online data from scientific papers, etc.)
+
+- Ask questions! And when possible, post your questions on Discord so that everyone can learn from them! 

@@ -1,0 +1,331 @@
+---
+title: "Lesson 6: Multiple Linear Regression Assumptions"
+subtitle: "24th/26th May, 2023"
+author: "Ilaria Venagli (PhD), Dr. Massimiliano Canzi"
+format:
+  html:
+    toc: true
+    number-sections: true
+---
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# load libraries 
+library(tidyverse)
+library(kableExtra)
+library(unikn)
+library(dlookr)
+library(ggpubr)
+
+library(lme4)
+library(lmerTest)
+library(sjPlot)
+library(car)
+
+
+# for all the chunks below, the setting "warning = F" is applied 
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+
+# theme set
+theme_set(theme_unikn()) # set uni-konstanz theme for all plots 
+
+# create variable "table style" and apply kableExtra styling options (see https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html)
+table_style <- c("striped", "hover", "condensed", "responsive") 
+options(kable_styling_bootstrap_options = table_style) 
+
+```
+
+# Short summary
+
+## Last time
+
+-   `n_distinct()`: e.g., you can use it within the summarize function to count number of participants avoiding repeated rows.
+-   `rowwise()`: row-wise computations - always to be combined with `ungroup()`
+-   `mutate(across(c()))`
+-   `mutate(c_across())`
+-   `plot_likert()`
+-   `log()`: log-transform continuous variables
+-   `drop1(,test = "Chisq")`: model selection
+-   `tab_model()`: display nice model table for knitted html/pdf documents
+
+## Today
+
+-   Assumptions of a linear regression model: Last week's mistake!
+-   Multiple `lm` -- again! 😃
+-   New functions:
+    -   `report::report`
+    -   `plot_model(name_model, type = "diag")`
+
+# Homework
+
+```{r, echo = F}
+read_csv("ort.know.en.csv") %>% 
+  dplyr::select(ID:write_school, 
+                # reorder 
+                books_en, articles_en, comics_en, posts_en, subt_en, # read en
+                books_it, articles_it, comics_it, posts_it, subt_it,
+                trial_number:FREQcount,
+                -word_a, -word_b, -Word# read it
+                ) %>% 
+  rename(frequency = FREQcount)-> df.homework
+```
+
+## Exercise 1:
+
+Create a grid with two `plot_likerts`, one should show English use at school (hence use the variables `speak_school`, `list_school`, `write_school` and `read_school`) and the other should display participants' use of EN in daily life (hence use the variables `speak_daily`, `list_daily`, `write_daily` and `read_daily`)
+
+```{r}
+### solution 
+
+### step 1: create smaller df 
+df.homework %>% select(speak_school:write_school) -> en.use.school
+en.use.school %>% 
+  mutate_all(~case_when(
+    . == 0 ~ 0, 
+    . == 0.25 ~ 1, 
+    . == 0.5 ~ 2, 
+    . == 0.75 ~ 3, 
+    . == 1~4
+  )) -> en.use.school
+df.homework %>% select(speak_daily:write_daily) -> en.use.daily
+en.use.daily %>% 
+  mutate_all(~case_when(
+    . == 0 ~ 0, 
+    . == 0.25 ~ 1, 
+    . == 0.5 ~ 2, 
+    . == 0.75 ~ 3, 
+    . == 1~4
+  )) -> en.use.daily
+
+ggarrange(
+  
+  # plot likert showing EN use at school 
+  plot_likert(en.use.school,
+            catcount = 5,
+            legend.labels = c("100% IT", "25% EN, 75% IT", "50% EN, 50% IT", "75% EN, 25% IT", "100% EN"),
+            title = "EN use at school", 
+            axis.labels = c("Speaking", "Understanding", "Reading", "Writing"),
+            geom.colors = "RdBu",
+            # values = "sum.inside",
+            reverse.scale = T, show.n = T), 
+  
+  # plot likert showing EN outside school 
+  plot_likert(en.use.daily,
+            catcount = 5,
+            legend.labels = c("100% IT", "25% EN, 75% IT", "50% EN, 50% IT", "75% EN, 25% IT", "100% EN"),
+            title = "EN use at school", 
+            axis.labels = c("Speaking", "Understanding", "Reading", "Writing"),
+            geom.colors = "RdBu",
+            # values = "sum.inside",
+            reverse.scale = T, show.n = T), 
+  
+  common.legend = T, 
+  nrow = 2, 
+  legend = "right"
+  
+)
+```
+
+## Exercise 2:
+
+Create a **composite measure** of English proficiency (subjective) by computing the mean of the variables `speaking`, `reading`, `understanding` and `writing`, then create a `boxplot` showing the differences between dyslexics and non-dyslexics
+
+```{r}
+# solution 
+
+df.homework %>% 
+  # operate row-wise 
+  rowwise() %>% 
+  mutate(eng.prof = mean(c_across(speaking:writing))) %>% 
+  ungroup() %>% 
+  
+  # plot 
+  
+  ggplot(aes(x = diagnosis, y = eng.prof, fill = diagnosis)) + geom_boxplot(alpha = .5) + ggtitle(" EN proficiency by group (TD vs. DYS) ")
+  
+```
+
+# Assumptions of a linear regression
+
+1.  **Linearity**: The relationship between each independent variable and the dependent variable is assumed to be
+
+2.  **Independence**: The observations or data points used in the regression analysis should be independent of each other.
+
+3.  **Constant variance**: The variance of the error terms (residuals) should be constant across all levels of the independent variables.
+
+4.  **Normality**: The error terms (residuals) are assumed to follow a normal distribution.
+
+5.  **No multicollinearity**: This assumption is crucial in multiple linear regression. It states that the independent variables should not be highly correlated with each other. High multicollinearity can cause instability in the estimates of the regression coefficients and affect the interpretation of the model.
+
+### What went wrong last week?
+
+The **df** we were using had **multiple observations for the same participants**
+
+```{r}
+read_csv("week_five.csv") -> df 
+nrow(df) # 4,480 rows 
+length(unique(df$ID)) # we should have 56 rows instead 
+```
+
+### IMPORTANT STEP
+
+::: {.alert .alert-dismissible .alert-danger}
+<button type="button" class="btn">
+
+</button>
+
+Reduce the data frame by retaining only **one observation per participant:** This has to be done here because **all the variables included in the model remain constant across all rows for each participant**. In this case, the assumption of independence would be violated.
+:::
+
+```{r}
+df %>% 
+  # reduce to 1 observation per participant 
+  filter(trial_number == 1) %>%  # 56 
+  # mutate cht to fct  
+  mutate_if(is.character, as.factor) %>% 
+  # scale IV 
+  mutate(
+    age = scale(age), age = as.double(age), 
+    AoO = scale(AoO), AoO = as.double(AoO), 
+    reading = scale(reading), reading = as.double(reading), 
+    eng.use = scale(eng.use), eng.use = as.double(eng.use), 
+    read.en = scale(read.en), read.en = as.double(read.en),
+  # log transform RT 
+    mean.rt = log(mean.rt)) -> df.model
+```
+
+Compare output of model with reduced data frame with output of model with bigger data frame:
+
+## Hypothesis 1:
+
+RT is predicted by:
+
+-   Diagnosis
+-   age
+-   AoO
+-   Reading exposure (not in the model now)
+-   Reading proficiency
+-   EN use
+
+```{r}
+# last week's model
+df %>% 
+  lm(formula = mean.rt ~ 
+       diagnosis + 
+       age + 
+       AoO + 
+       reading + 
+       eng.use + 
+       read.en
+       ) -> m1 
+summary(m1)
+
+# Model with reduced data frame 
+df.model %>% 
+  lm(formula = mean.rt ~ 
+       diagnosis + 
+       age + 
+       AoO + 
+       reading + 
+       eng.use + 
+       read.en
+       ) -> m1a
+summary(m1a)
+```
+
+```{r}
+# Check residuals of m1 and m1a 
+plot_model(m1, type = "diag")
+plot_model(m1a, type = "diag")
+```
+
+```{r, echo = T}
+# model selection of m1a with drop1 
+df.model %>% 
+  lm(formula = mean.rt ~ 
+       diagnosis + 
+       age + 
+       AoO + 
+       reading + 
+       eng.use +
+       read.en
+       ) -> m1a
+
+## Test model 
+drop1(m1a, test = "Chisq")
+
+## Model output 
+summary(m1a)
+```
+
+```{r, eval = F, echo = T}
+# syntax 
+plot_model(model.name, type = "diag")
+vif(model.name)
+```
+
+-   `plot_model(model_name, type = "diag")`: Checks model assumptions
+
+```{r}
+# check plot model "diag"
+```
+
+-   `vif`: computes the VIF values by regressing each independent variable against the other independent variables in the model
+
+```{r}
+# check vif 
+
+```
+
+-   **VIF = 1:** indicates no multicollinearity, meaning there is no correlation between the independent variable and other independent variables in the model
+
+-   **VIF** **between 1 and 5** are generally considered acceptable, indicating low to moderate multicollinearity
+
+-   **VIF values above 5 or 10** (depending on the field) are often considered high, suggesting the presence of multicollinearity.
+
+```{r}
+# plot model 
+```
+
+### Report model
+
+```{r, eval = F}
+# syntax 
+report::report(model.name)
+```
+
+```{r}
+# report 
+```
+
+## Hypothesis 2
+
+```{r}
+df.model %>% 
+  lm(formula = accuracy_tot ~ 
+       age + 
+       AoO + 
+       reading + 
+       diagnosis + 
+       eng.use + 
+       read.en
+     ) -> m2
+
+## Model selection
+#drop1(m2, test = "Chisq")
+
+## Model output
+#summary(m2)
+```
+
+```{r}
+# check assumptions 
+```
+
+```{r}
+# plot model 
+```
+
+```{r}
+# report model
+```

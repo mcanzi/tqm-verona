@@ -1,0 +1,344 @@
+---
+title: "Lesson 2"
+subtitle: "26th/28th April, 2023"
+author: "Ilaria Venagli (PhD), Dr. Massimiliano Canzi"
+format:
+  html:
+    theme: united
+    toc: true
+    number-sections: true
+---
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load libraries 
+library(tidyverse)
+library(kableExtra)
+library(unikn)
+library(dlookr)
+
+
+# for all the chunks below, the setting "warning = F" is applied 
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+
+# theme set
+theme_set(theme_unikn()) # set uni-konstanz theme for all plots 
+
+# create variable "table style" and apply kableExtra styling options (see https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html)
+table_style <- c("striped", "hover", "condensed", "responsive") 
+options(kable_styling_bootstrap_options = table_style) 
+
+```
+
+# Last time...
+
+-   Create and edit a Quarto document
+-   Chunks options
+-   Definitions (variables, vectors, functions, etc.)
+-   Character `<chr>`, double `<dbl>`, factor `<fct>` vectors
+
+# Homework solutions
+
+```{r}
+read_csv("homework.csv") -> hw
+# check length of dataset with length() 
+length(
+  # unique() counts only one raw per participant
+  unique(
+    # call the dataset (hw) and the column of interest (participant) with $
+    hw$participant
+  )
+)
+
+
+# one-line formula: 
+# length(unique(hw$participant))
+
+
+# mean age of participants 
+mean(hw$age)
+
+# or
+summary(hw$age)
+```
+
+# Getting started with tidyverse
+
+-   **Step 1:** Load libraries
+
+```{r, eval = FALSE}
+# load libraries 
+library(tidyverse)
+library(kableExtra)
+library(unikn)
+library(dlookr)
+```
+
+-   **Step 2:** Upload your data in R
+
+```{r}
+read_csv("reading_tests.csv") -> df
+```
+
+-   `ID`: participant's identification code
+
+-   `diagnosis`: diagnosis of dyslexia (YES/NO)
+
+-   `class`: participants' education level (1 to 5, and "uni")
+
+-   `wr_time:` word reading time
+
+-   `wr_errors:` word reading errors
+
+-   `nwr_time:` nonword reading time
+
+-   `nwr_errors:` nonword reading errors
+
+**IMPORTANT NOTE: CHECK THE STRUCTURE OF THE DATASET.**
+
+-   One column per each variable
+
+-   If participants responded to more than one trial, then you might have multiple lines for each participant.
+
+**Step 3:** Explore your data
+
+```{r}
+# number of participants 
+length(unique(df$ID)) # 58 
+
+# number of participants per class 
+# this works when we only have one raw per participants. 
+# We will learn how to do it when we have multiple raws for participant. 
+table(df$class) 
+```
+
+Other options to quickly "diagnose" your variables:
+
+-   `dlookr::diagnose_category` works for **factor/character** variables
+
+```{r}
+df %>% 
+  diagnose_category(class, diagnosis) %>% 
+  kable() %>% kable_styling()
+```
+
+-   `dlookr::diagnose_numeric` works for **numeric** variables
+
+```{r}
+df %>% 
+  diagnose_numeric(wr_time, wr_errors) %>% 
+  kable() %>% kable_styling()
+
+```
+
+-   `kableExtra::kable()` is a function which allows you to create and edit tables for html documents
+
+-   You can use the function `kable()` to generate the kable object
+
+```{r}
+# create a table
+table(df$diagnosis) %>% 
+  # transform it into a kable object
+  kable() 
+```
+
+-   You can use the function `kable_styling()` to edit the kable object
+
+-   If you use the same format for all the tables in your file, then you can set default options and run this code at the very beginning of the file
+
+-   Check: see https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html
+
+```{r, eval = FALSE}
+# create variable "table style" and apply kableExtra styling options 
+table_style <- c("striped", "hover", "condensed", "responsive") 
+options(kable_styling_bootstrap_options = table_style) 
+```
+
+```{r}
+# add the function kable_styling() to the code above: 
+# create a table
+table(df$diagnosis) %>% 
+  kable() %>% 
+  kable_styling()
+```
+
+## `rename`
+
+`rename(data, new_name = original_name)` allows you to change the names of your original columns.
+
+```{r}
+table(df$diagnosis) %>% 
+  # you can use rename to change the names of your columns
+  # first, transform the table in a data frame 
+  as.data.frame() %>% 
+  # use rename (see below)
+  rename(Diagnosis = Var1, N = Freq) %>% 
+  kable() %>% kable_styling()
+```
+
+## `select`
+
+Today we will focus on **word reading** time and errors. Using the function `select`, we reduce our dataset to the columns of interest:
+
+```{r}
+# ex 1. select all the columns from ID to wr_errors, but remove class_2. Save it as df. 
+```
+
+## `filter`
+
+### Filter operators:
+
+-   `==`
+
+-   `>`
+
+-   `<`
+
+-   `>=`
+
+-   `<=`
+
+-   `!=`
+
+-   `%in% c()`
+
+-   `|` (or)
+
+-   `&` (and)
+
+```{r}
+# ex 2: filter participants' with less than 5 wr_errors. Save it as ex.2.
+```
+
+```{r}
+# ex 3: filter participants whose wr_time is less than 70 seconds. Save it as ex.3. 
+```
+
+```{r}
+# ex 4: filter participants whose wr_time is between 60 and 70 seconds. Save it as ex.4.
+```
+
+```{r}
+# ex 5: filter participants in class 3/4/5 
+## there are two different solutions. The first solution treats the class variable as a numeric variable, the second as a factor/character variable. Save them as ex.5 and ex5a.
+```
+
+## `mutate`
+
+-   Mutate is a more complex function, as it can be combined with other functions; commonly, `if_else` and `case_when`.
+
+-   `mutate(), mutate_if(), mutate_all()` are other functions that help you "mutate" your original data.
+
+You can change the **class of your original variables**, e.g.:
+
+```{r}
+
+class(df$class) # class is originally a character 
+
+# we can transform it into a <fct> using mutate
+df %>% 
+  mutate(class = as.factor(class)) -> df 
+
+# syntax: mutate(name_new_column = as.factor(name_old_column)) 
+```
+
+-   Keep the original name and mutate the original column
+
+```{r, eval = FALSE}
+
+df %>% # take dataset and then... 
+  mutate( 
+    # mutate the original column 'class' (keep the same name)
+    class = 
+    as.factor(class) # transform the original 'class' into a factor
+  )
+```
+
+-   Create a new column by choosing a new name (e.g, **class_fct**) in the example below
+
+```{r, eval = FALSE}
+
+df %>% 
+  mutate(class_fct = as.factor(class)) -> df 
+```
+
+-   If you want to apply the same class type to all character vectors, you can use `mutate_if`
+
+```{r, eval = FALSE}
+
+df %>% mutate_if(is.character, as.factor) -> df 
+```
+
+-   `mutate_all` allows you to apply a change to all the columns in a dataset
+
+```{r, eval = FALSE}
+# example 
+
+# Use mutate_all to add 1 to each numeric column 
+df %>% 
+  # here I am selecting only numeric variables otherwise the function would not work
+  dplyr::select(wr_time, wr_errors) %>%  
+  # apply mutate all 
+  mutate_all(~ . + 1) -> df 
+```
+
+-   Let's now create a new column together
+
+```{r}
+# ex. 6
+# take only participants in class 3
+# select the following columns: ID, group, wr_time
+# add these new columns to the dataset: 
+## group_mean = 65.39
+## group_sd = 14.4
+## syllables = 308
+## syllables per second = syllables / wr_time
+## wr_time_z = group_mean - wr_time / group_sd
+
+# save it as ex.6
+```
+
+# Homework
+
+## **Exercise 1**
+
+-   Upload the "reading_tests.csv" file
+
+-   Filter participants in `class` 3
+
+-   Select `wr_errors` column
+
+-   Mutate the `ID`, `class` and `diagnosis` columns into factor
+
+-   Create the column `group_mean` with value 2.32
+
+-   Create the column `group_sd` with the value 2.57
+
+-   Create the column **`error_z`** which is given by the following calculation:
+
+    -   **group_mean - wr_errors / group_sd**
+
+**Note:** Try to write everything in **one single code!**
+
+## **Exercise 2 (CHALLENGE!)**
+
+**PLEASE NOTE: In the "challenge" exercises, we give you NEW FUNCTIONS ON PURPOSE.**
+
+You can try it out at home, and see whether you can get to the solution. A lot of coding is learnt online, so this is a way to let you find solutions on your own. We will certainly explain this in class!
+
+Similarly to exercise 1:
+
+-   Filter participants in class 4 and 5
+
+-   Select **`wr_time`**
+
+-   Using **if_else** (or case_when), create the columns:
+
+    -   `group_mean:` if class is 4, group **mean** is 62, if class is 5, group mean is 61.26
+
+    -   `group_sd:` if class is 4, group sd is 12.65, if class is 5, group mean is 11.73
+
+-   Create the column `time_z` which is given by the following formula:
+
+    -   **group_mean - wr_time / group_sd**
