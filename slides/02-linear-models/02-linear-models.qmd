@@ -1,0 +1,430 @@
+---
+title: "Linear Models"
+author: "Dr Massimiliano Canzi"
+format: 
+  revealjs:
+    transition-speed: fast
+    transition: fade
+    background-transition: fade
+    chalkboard: true
+    slide-number: true
+    show-slide-number: print
+    touch: true
+    controls: true
+    theme: theme-mc.scss
+    incremental: true
+    footer: "`massimiliano.canzi@uni-konstanz.de` | Room G114, **Universität Konstanz**. Universitätstr. 10, 78467 Konstanz DE"
+---
+
+```{r}
+#| include: false
+library(palmerpenguins)
+library(gganimate)
+library(tidyverse)
+library(ggdark)
+```
+
+# Univariate > Bivariate 
+
+## Univariate > Bivariate 
+
+- Univariate > Bivariate (or multivariate.. watch this space)
+- Mean > Conditional mean
+
+> Model changes in `y` by changes in `x`
+
+- __Univariate__: Mean bill length (mm)
+- __Bivariate__: Mean bill length (mm) by mean bill depth (mm)
+
+## Simple linear regression
+
+- Dependent, response, __outcome__ variable
+- Independent variable or __predictor__
+
+"Simple linear regression is an approach that models a __single continuous response variable__ as a function of a __predictor variable__" `Winter`, 2019
+
+## Simple linear regression 
+
+> Single continuous outcome variable:
+
+. . .
+
+What you are measuring, your __dependent variable__ or __outcome variable__ (e.g. in linguistic studies: vowel formant frequencies, pitch height, reaction times, accuracy, reading speed, etc.)
+
+. . .
+
+> Predictor variable:
+
+. . .
+
+The variable you manipulate with the aim of observing changes in the measurements of your outcome variable. 
+
+# Intercepts \& slopes
+
+`Did you know:` Polar bears are classified as marine mammals.  
+
+_Because they spend most of their lives on the sea ice of the Arctic Ocean depending on the ocean for their food and habitat, polar bears are the only bear species to be considered marine mammals._     
+`https://www.wwf.org.uk/`
+
+## Intercepts \& slopes
+
+```{r}
+ggplot() +
+  geom_abline(intercept = 3, slope = 1, linetype = "dashed", colour = "plum2",
+              linewidth = 1) +
+  geom_abline(intercept = 3, slope = -0.2, linetype = "dashed", colour = "deepskyblue4",
+              linewidth = 1) +
+  geom_vline(xintercept = 0, linewidth = 0.5) +
+  ylim(0, 6) + ylab("Y") +
+  xlim(-1, 6) + xlab("X") +
+  dark_theme_classic()
+```
+
+## Intercepts \& slopes
+
+```{r}
+ggplot() +
+  geom_abline(intercept = 5, slope = 0, linetype = "dashed", colour = "plum2",
+              linewidth = 1) +
+  geom_abline(intercept = 3, slope = 0, linetype = "dashed", colour = "deepskyblue4",
+              linewidth = 1) +
+  geom_vline(xintercept = 0, linewidth = 0.5) +
+  ylim(0, 6) + ylab("Y") +
+  xlim(-1, 6) + xlab("X") +
+  dark_theme_classic()
+```
+
+## Intercepts \& slopes
+
+. . .
+
+> Example 1: same intercepts, different slopes
+
+. . .
+
+> Example 2: different intercepts, same slope
+
+## Simple linear regression
+
+```{r}
+#| warning: false
+penguins %>% ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  dark_theme_minimal() +
+  xlab("Bill Depth (mm)") + ylab("Bill Length (mm)")
+```
+
+## Simple linear regression
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  dark_theme_minimal() +
+  xlab("Bill Depth (mm)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## What even is that 
+
+One common method to estimate our __regression line__ is: __The least squares method__  
+
+. . .
+
+It is a statistical procedure to find the best fit for a set of data points by minimizing the sum of the offsets or residuals of points from the plotted curve.
+
+# Linear models in R
+
+`Did you know`: A polar bear's skin is actually black.  
+
+_Beneath all that thick fur, polar bears have jet black skin. The polar bear’s fur is also translucent, and only appears white because it reflects visible light._  
+
+`https://www.wwf.org.uk/`
+
+## `lm()` in `R`
+
+```{r}
+#| echo: true
+penguins %>% lm(formula = bill_length_mm ~ bill_depth_mm) -> first.model
+summary(first.model)
+```
+
+## `lm()` in `R`
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  dark_theme_minimal() +
+  xlab("Bill Depth (mm)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## `lm()` in `R`
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  xlim(0, 23) +
+  dark_theme_minimal() +
+  xlab("Bill Depth (mm)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## `lm()` in `R`
+
+```{r}
+#| echo: true
+coefficients(first.model)
+```
+
+. . .
+
+```{r}
+#| echo: true
+mean(residuals(first.model))
+```
+
+. . .
+
+With package `{broom}`:
+
+. . .
+
+```{r}
+#| echo: true
+library(broom)
+tidy(first.model)
+```
+
+## `lm()` in `R`
+
+If you're in a rush.. 
+
+. . . 
+
+```{r}
+#| echo: true
+penguins %>% lm(formula = bill_length_mm ~ bill_depth_mm) %>% tidy()
+```
+
+# Transformations 
+
+`Did you know`: Male polar bears can weigh as much as __10__ men.  
+
+_Male polar bears can weigh up to 800 kg, and are twice the size of females. Polar bears can also grow up to 3 metres long, making them the largest bear species and the largest land carnivore in the world._  
+
+`https://www.wwf.org.uk/`
+
+## Linear transformations 
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  xlim(0, 23) +
+  dark_theme_minimal() +
+  xlab("Bill Depth (mm)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## Centering
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% na.omit() %>% 
+  mutate(bill_depth_mm = bill_depth_mm - mean(bill_depth_mm)) %>% 
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  #xlim(0, 23) +
+  dark_theme_minimal() +
+  xlab("Bill Depth (mm)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+## Standardisation
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% ggplot(aes(x = scale(bill_depth_mm), y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  dark_theme_minimal() +
+  xlab("Bill Depth (z-score)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## Double standard.. isation
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% ggplot(aes(x = scale(bill_depth_mm), y = scale(bill_length_mm))) + 
+  geom_point(col = "plum3") +
+  dark_theme_minimal() +
+  xlab("Bill Depth (z-score)") + ylab("Bill Length (z-score)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## Linear transformations
+
+> You can __center__ by removing the mean from the distribution 
+
+. . .
+
+```{r}
+#| echo: true
+penguins %>% na.omit() %>% 
+  mutate(bill_depth_mm = bill_depth_mm - mean(bill_depth_mm)) -> penguins_2
+```
+
+. . .
+
+> You can __standardise__ using `scale()`
+
+```{r}
+#| echo: true
+penguins %>% na.omit() %>% 
+  mutate(bill_depth_mm = scale(bill_depth_mm), 
+         bill_length_mm = scale(bill_length_mm)) -> penguins_2
+```
+
+## Non-linear transformations 
+
+Taking the __logarithm__
+
+. . .
+
+```{r}
+dist <- tibble(dist = c(1, 4, 3, 5, 4, 6, 5, 15, 2, 5, 20, 4, 5, 50, 100, 4, 5, 6, 30, 12, 10, 9, 5, 13, 70, 12, 14, 15, 2, 5, 6, 3, 50, 100, 4, 3, 10, 14, 80, 40, 50, 50, 60, 80, 40, 4, 5, 6, 10, 12, 20, 18, 30, 18, 15, 16, 4, 10, 20, 21, 21, 22))
+```
+
+```{r}
+ggplot(dist, aes(x = dist)) + 
+  geom_density(col = "plum3", linewidth = 1.5) + 
+  dark_theme_minimal() +
+  xlab("Distribution") + ylab("Density")
+```
+
+## Non-linear transformations 
+
+Taking the __logarithm__
+
+```{r}
+ggplot(dist, aes(x = log(dist))) + 
+  geom_density(col = "plum3", linewidth = 1.5) + 
+  dark_theme_minimal() +
+  xlab("Log-transformed Distribution") + ylab("Density")
+```
+
+## Non-linear transformations 
+
+The logarithm is the inverse function to exponentiation.  
+
+. . . 
+
+That means the logarithm of a number x to the base b is the exponent to which b must be raised, to produce x.
+
+# Bear in mind..
+
+The aim of the course is to teach __applied statistics__ for linguists (and social scientists)
+
+# Code
+
+## Packages
+
+```{r}
+#| echo: true
+#| eval: false
+library(palmerpenguins)
+library(gganimate)
+library(tidyverse)
+library(ggdark)
+```
+
+## Intercepts \& slopes
+
+```{r}
+#| echo: true
+ggplot() +
+  geom_abline(intercept = 3, slope = 1, linetype = "dashed", colour = "plum2",
+              linewidth = 1) +
+  geom_abline(intercept = 3, slope = -0.2, linetype = "dashed", colour = "deepskyblue4",
+              linewidth = 1) +
+  geom_vline(xintercept = 0, linewidth = 0.5) +
+  ylim(0, 6) + ylab("Y") +
+  xlim(-1, 6) + xlab("X") +
+  dark_theme_classic()
+```
+
+## Intercepts \& slopes
+
+```{r}
+#| echo: true
+ggplot() +
+  geom_abline(intercept = 5, slope = 0, linetype = "dashed", colour = "plum2",
+              linewidth = 1) +
+  geom_abline(intercept = 3, slope = 0, linetype = "dashed", colour = "deepskyblue4",
+              linewidth = 1) +
+  geom_vline(xintercept = 0, linewidth = 0.5) +
+  ylim(0, 6) + ylab("Y") +
+  xlim(-1, 6) + xlab("X") +
+  dark_theme_classic()
+```
+
+## Centering
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: true
+penguins %>% na.omit() %>% 
+  mutate(bill_depth_mm = bill_depth_mm - mean(bill_depth_mm)) %>% 
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  #xlim(0, 23) +
+  dark_theme_minimal() +
+  xlab("Bill Depth (mm)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## Standardisation
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: true
+penguins %>% ggplot(aes(x = scale(bill_depth_mm), y = bill_length_mm)) + 
+  geom_point(col = "plum3") +
+  dark_theme_minimal() +
+  xlab("Bill Depth (z-score)") + ylab("Bill Length (mm)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```
+
+## Double standard.. isation
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: true
+penguins %>% ggplot(aes(x = scale(bill_depth_mm), y = scale(bill_length_mm))) + 
+  geom_point(col = "plum3") +
+  dark_theme_minimal() +
+  xlab("Bill Depth (z-score)") + ylab("Bill Length (z-score)") +
+  geom_smooth(method = "lm", col = "deepskyblue4", fill = "deepskyblue4", linewitdh = 1.5, 
+              linetype = "solid")
+```

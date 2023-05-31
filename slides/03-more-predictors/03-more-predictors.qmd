@@ -1,0 +1,121 @@
+---
+title: "More predictors"
+author: "Dr Massimiliano Canzi"
+format: 
+  revealjs:
+    transition-speed: fast
+    transition: fade
+    background-transition: fade
+    chalkboard: true
+    slide-number: true
+    show-slide-number: print
+    touch: true
+    controls: true
+    theme: theme-mc.scss
+    incremental: true
+    footer: "`massimiliano.canzi@uni-konstanz.de` | Room G114, **Universität Konstanz**. Universitätstr. 10, 78467 Konstanz DE"
+---
+
+```{r}
+#| include: false
+library(palmerpenguins)
+library(gganimate)
+library(tidyverse)
+library(ggdark)
+```
+
+# Summary 
+
+## Simple Linear Regression 
+
+- Dependent, response, __outcome__ variable
+- Independent variable or __predictor__
+
+"Simple linear regression is an approach that models a __single continuous response variable__ as a function of a __predictor variable__" `Winter`, 2019
+
+# More?
+
+## Multiple regression
+
+**Multiple regression** is a statistical technique that allows us to predict a single, continuous outcome variable on the basis of more than one predictor variable.
+
+It is used when you want to predict the value of a variable based on the value of two or more other variables. The variable we want to predict is called the dependent variable (or sometimes, the outcome, target or criterion variable).
+
+## Multiple regression
+
+In R, it would look like this: 
+
+```{r}
+#| echo: true
+#| eval: false
+lm(OV ~ IV1 + IV2 + IV3 + ..., data = data)
+```
+
+## Continuous predictors 
+
+Continuous predictors are variables that can take on any value within a certain range.  
+
+Examples of continuous predictors could be something like temperature, height, weight, or age.  
+
+## Categorical predictors 
+
+On the other hand, categorical predictors (also called factor variables) can only take on a limited, and usually fixed, number of possible values.
+
+Examples could be something like biological sex (male, female) or education level (high school, undergrad, grad, ...).
+
+## Coding categorical predictors 
+
+Coding is a statistical technique used for categorical variables in regression analyses. It allows researchers to make specific comparisons between the levels of a categorical variable.  
+
+## Coding categorical predictors 
+
+For example: 
+
+- Choose a 'reference' level of your variable. This will typically be coded as 0.  
+- Choose a 'contrast' level that you want to compare against the reference level. This will typically be coded as 1.
+
+Other types of coding...
+
+# Interactions in Multiple Regression 
+
+In the realm of multiple regression, **interactions** play a pivotal role. They allow us to explore how the relationship between the independent variables and the dependent variable may change depending on the values of other independent variables.
+
+## Conceptualizing Interactions
+
+An **interaction effect** is present when the effect of one predictor variable on the response variable changes, depending on the value of another predictor variable.
+
+In other words, the predictors *interact* with each other in their effect on the response.
+
+## Why Are Interactions Important?
+
+By considering interactions, we can gain a more nuanced understanding of our data. They can illuminate complex dynamics that are not evident when only considering main effects.
+
+For example, if we were trying to predict health outcomes based on diet and exercise, an interaction might show that diet has a strong impact on health outcomes for individuals who do not exercise much, but less so for those who exercise regularly.
+
+## Identifying Interactions
+
+Interaction effects can be identified by including an interaction term in the regression model. This term is the product of the interacting variables.
+
+For example, if we have two independent variables X and Y, and we suspect that they interact to predict a dependent variable Z, our regression equation would look like this:
+
+`Z = β0 + β1*X + β2*Y + β3*(X*Y) + ε`
+
+The β3 coefficient represents the interaction effect.
+
+## Interpreting Interactions
+
+Interpreting interaction effects can be challenging as the meaning of any single predictor's coefficient depends on the values of the other predictors.
+
+One common way to interpret interactions is by *probing the interaction*, i.e., examining the effect of one variable at different values of the other variable(s).
+
+Often, this is done by picking meaningful values of the other variables (like the mean, or plus and minus one standard deviation) and examining the effect of one predictor at these values.
+
+# In Conclusion
+
+Interactions offer a richer, more complete picture of the relationships between variables in a multiple regression analysis. They can illuminate complex dynamics that main effects alone might miss.
+
+Remember, though, that they also complicate the interpretation of the model - so use them wisely!
+
+# In Conclusion 
+
+Let's now look at interactions in the book: 

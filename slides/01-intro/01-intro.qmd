@@ -1,0 +1,139 @@
+---
+title: "Hello World"
+author: "Dr Massimiliano Canzi"
+format: 
+  revealjs:
+    transition-speed: fast
+    transition: fade
+    background-transition: fade
+    chalkboard: true
+    slide-number: true
+    show-slide-number: print
+    touch: true
+    controls: true
+    theme: theme-mc.scss
+    incremental: true
+    footer: "`massimiliano.canzi@uni-konstanz.de` | Room G114, **Universität Konstanz**. Universitätstr. 10, 78467 Konstanz DE"
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+```
+
+# Introduction
+
+<img src="qr2.png">
+
+## Who
+
+Dr Massimiliano (__Max__) Canzi
+
+- `PhD`: University of Manchester 
+- `MSc`: University of York 
+- `MA`: University of Manchester 
+- `BA`: University of Milan
+
+__Interests__: `speech perception`, `rstats`, `quantitative linguistics`, `experimental linguistics`, `speech production`, 
+`forensic speech science` 
+
+## Who
+
+Dr Massimiliano (__Max__) Canzi
+
+- `What PMN? Processing phonological mismatch in semantics-free speech perception`
+- `Do somatic features of a speaker mediate the perception of the speaker's voice?`
+- `A quantitative analysis of acoustic differences between neutral and loud speech`
+
+## Who 
+
+`... ARE YOU?`
+
+## Slides
+
+Slides are made in `RStudio`, using `Quarto` and `RevealJS`
+
+. . .
+
+On GitHub, you can find:   
+
+https://github.com/mcanzi/tqm-verona  
+
+- The `slides` (as a .html file)
+- The `code` for the slides (as a .qmd file, if applicable)
+- Extra `exercises`, data sets 
+
+## Resources
+
+- You can join the `Discord` server through the link below:
+- Use the `homework-help` channel for any content-related question first. 
+- Use other channels too to keep up-to-date. 
+
+https://discord.gg/DVe35Z6sn8  
+
+## Book 
+
+Winter, B. (2019). `Statistics for linguists: An introduction using R`. Routledge.
+
+## The meat and potatoes
+
+- R
+- RStudio
+- Quarto 
+
+## `swirl` 
+
+`swirl` is an `R` package that teaches you to use `R`.. in `R`. You can learn more at the project homepage [__here__](https://swirlstats.com/students.html). You install `swirl` like you install any other `R` package. You need to do this only once. 
+
+```{r}
+#| eval: false
+#| echo: true
+install.packages("swirl")
+```
+
+To use `swirl` when you open __RStudio__, import the package and start a new `swirl` session. 
+
+```{r}
+#| eval: false
+#| echo: true
+library(swirl)
+swirl()
+```
+
+## `swirl`
+
+The `swirl` package contains dozens of interactive tutorials for learning `R`, from more basic exercises to more complex modelling tasks. You will be given specific tutorials to complete as part of your homework. You are very encouraged to complete these tasks and explore more on your own. 
+
+## `tidyverse`
+
+`tidyverse` is a new _dialect_ of `R` _(the standard variety being base `R`)_
+
+. . .
+
+`tidyverse` is a series of `R` packages and functions created by [__H. Wickham__](https://twitter.com/hadleywickham) and colleagues that substitute many of the base `R` alternatives, while at the same time being easier to write, read and reproduce. However, there is no way around knowing the basics of base `R` before we dive into the `tidyverse`. 
+
+# Quant Methods?
+
+`Did you know:` _The otter is one of the few mammals that use tools.
+They have a loose patch of skin under their armpit to store both the food they've foraged and their rock to crack it open._
+
+## Why Quantitative Methods?
+
+Discuss...
+
+## Objective or Subjective?
+
+Discuss...
+
+## You will
+
+- Acquire `fundamental concepts` to conduct statistical analyses (in R.)  
+- Learn fundamental concepts of `regression modelling`
+- Learn to apply the above to `real linguistic data`
+- Maybe some extra stuff if we have time? Who knows
+
+## And now
+
+. . .
+
+Let's jump into `RStudio` for an overview

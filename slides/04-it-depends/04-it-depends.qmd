@@ -1,0 +1,92 @@
+---
+title: "It depends"
+author: "Dr Massimiliano Canzi"
+format: 
+  revealjs:
+    transition-speed: fast
+    transition: fade
+    background-transition: fade
+    chalkboard: true
+    slide-number: true
+    show-slide-number: print
+    touch: true
+    controls: true
+    theme: theme-mc.scss
+    incremental: true
+    footer: "`massimiliano.canzi@uni-konstanz.de` | Room G114, **Universität Konstanz**. Universitätstr. 10, 78467 Konstanz DE"
+---
+
+```{r}
+#| include: false
+library(palmerpenguins)
+library(gganimate)
+library(tidyverse)
+library(ggdark)
+```
+
+# From Linear Regression to Linear Mixed Effects Models
+
+While **linear regression** is a useful tool for modeling relationships between variables, it falls short when we have *repeated measures* or *non-independent data*. This is where **Linear Mixed Effects Models** come into play.
+
+## Repeated Measures
+
+**Repeated measures** data is collected when measurements are taken on the same units (e.g., individuals, schools, countries) multiple times. 
+
+This kind of data violates the independence assumption of linear regression because measures taken on the same unit are likely to be more similar to each other than measures taken on different units.
+
+## Linear Mixed Effects Models
+
+**Linear Mixed Effects Models** (often called `lmer` models after the R function) are an extension of linear regression that can handle repeated measures and other forms of non-independent data.
+
+These models include both *fixed effects*, which are the effects of the variables of interest, and *random effects*, which account for variability in the data that isn't due to the variables of interest.
+
+## Random Effects
+
+**Random effects** are factors whose levels are sampled from a larger population. They are random variables and can vary across levels of a factor (e.g., between individuals, over time).
+
+Random effects are used when we want to model variability due to grouping factors, such as differences between individuals in a study or differences between experimental units. 
+
+## Adding Random Effects in `lmer`
+
+In `lmer`, random effects are specified in the model formula using the `(1 | group)` notation, where `group` is the grouping factor (the unit that measurements are clustered within).
+
+For example, if we were modeling test scores as a function of study time, and we had multiple measurements for each student, we might include a random effect for `Student` to account for the fact that scores will be more similar for the same student.
+
+## Interpreting `lmer` Models
+
+Interpreting mixed effects models can be a bit trickier than interpreting standard linear regression. 
+
+The fixed effects are interpreted similarly to the coefficients in linear regression. However, the random effects provide information about the variance within the levels of the random effects variable(s).
+
+For example, a larger random effect for `Student` in our earlier example would indicate that there is substantial variation in test scores between students, even after accounting for study time.
+
+## Different interpretations of RE
+
+(From a post by Stefano Coretta) 
+
+__(1)__ Constant vs varying coefficients
+
+Kreft, Kreft, and Leeuw (1998) distinguish between fixed and random regression coefficients. Fixed coefficients are constant across individuals, while random coefficients vary.
+
+## Different interpretations of RE
+
+__(2)__ Researcher’s interest
+
+Searle, Casella, and McCulloch (2009, sec. 1.4) discuss effects in terms of the researcher’s interest. Effects are considered fixed if the research question/hypothesis being tested covers those effects, or random if the interest lies in the underlying population rather than on the individual effects.
+
+## Different interpretations of RE
+
+__(3)__ When a sample exhausts the population, the corresponding variable is fixed; when the sample is a small (i.e., negligible) part of the population the corresponding variable is random.  
+
+— Green and Tukey (1960)
+
+## Different interpretations of RE
+
+__(4)__ If an effect is assumed to be a realized value of a random variable, it is called a random effect.  
+
+— LaMotte (1983)
+
+## Different interpretations of RE
+
+__(5)__ The last definition of fixed vs random effects is based on the method employed to estimate them. Fixed effects are estimated using maximum likelihood, while random effects are estimated with partial pooling. Partial pooling means that the estimation of the random effects influence the estimation of the fixed effects and vice versa. This definition is standard in the multilevel modelling literature (Snijders and Bosker 2011, sec. 4.2) and in econometrics.
+
