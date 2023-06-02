@@ -1,0 +1,97 @@
+---
+title: "Penguins"
+author: "Dr Massimiliano Canzi"
+format: revealjs
+---
+
+Adélie penguins are an enchanting species of penguins, native to the Antarctic coast. They are easily identifiable by the white ring around their eyes and their black feathered back. Named after the wife of French explorer Jules Dumont d'Urville, Adélies are adept swimmers and feed primarily on krill, squid, and small fish. They are also known for their interesting stone-collecting behavior during the mating season, where males often present pebbles as gifts to their potential mates.
+
+Chinstrap penguins, named for the thin black band under their heads which appears like a strap holding a hat, are one of the most distinguishable penguin species. They inhabit the islands and shores of the Southern Pacific and Antarctic Oceans and are known for their agility both in water and on steep, icy cliffs. Like their Adélie counterparts, chinstrap penguins also largely feed on krill. Despite their smaller size, they are known for their loud, aggressive demeanor, especially when defending their nests during the breeding season.
+
+Gentoo penguins are another fascinating species found primarily on the Antarctic Peninsula and various sub-Antarctic islands. Recognized by their bright orange bills and a distinctive white patch above their eyes, these penguins are the third-largest penguin species. They are the fastest underwater swimmers among penguins, reaching speeds up to 22 mph. Gentoos primarily feed on krill and fish. Unlike other species, Gentoo penguins often stay close to their breeding colonies throughout the year. Their unique high-pitched vocalization, often compared to a trumpet, can be heard echoing through their environment.
+
+```{r}
+#| include: false
+library(car)
+library(emmeans)
+library(lme4)
+library(lmerTest)
+library(palmerpenguins)
+library(report)
+library(sjPlot)
+library(tidyverse)
+library(viridis)
+```
+
+We are interested in exploring a few research questions: 
+
+__1)__ Is the depth of a penguin's bill predictive of the length of their bill? 
+__2)__ Does __1)__ vary by species and / or sex? 
+
+Conceptually: 
+
+- 
+-
+
+First step: let's visualise things! 
+
+```{r}
+penguins %>% ggplot(...)
+```
+
+```{r}
+penguins %>% ggplot(...)
+```
+
+```{r}
+penguins %>% ggplot(...)
+```
+
+Practically: 
+
+```{r}
+model_1 <- lm(..., data = penguins)
+```
+
+Practically: 
+
+```{r}
+model_2 <- lm(..., data = penguins)
+```
+
+Report of our model: 
+
+```{r}
+report(model_1)
+```
+
+```{r}
+report(model_1)
+```
+
+
+How good are our models?
+
+```{r}
+drop1(model_1)
+```
+
+```{r}
+drop1(model_2)
+```
+
+... 
+
+Let's visualise the effects: 
+
+```{r}
+plot_model()
+```
+
+```{r}
+plot_model()
+```
+
+Now you are ready to write up your results: 
+
+
