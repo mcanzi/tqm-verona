@@ -1,0 +1,300 @@
+---
+title: "Into the {tidyverse}"
+author: "Dr Massimiliano Canzi"
+format: 
+  revealjs:
+    transition-speed: fast
+    transition: fade
+    background-transition: fade
+    chalkboard: true
+    slide-number: true
+    show-slide-number: print
+    touch: true
+    controls: true
+    theme: theme-mc.scss
+    incremental: true
+    footer: "`massimiliano.canzi@uni-konstanz.de` | Room G114, **Universität Konstanz**. Universitätstr. 10, 78467 Konstanz DE"
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+library(gganimate)
+```
+
+# tidywhat?
+
+_"R is not a language driven by the purity of its philosophy; R is a language designed to get shit done."_  
+
+`Hadley Wickham` (Founder of RStudio / Posit)
+
+# tidywhat?
+
+__Album of the week__ (AOTW):
+  
+  `"Dragon New Warm Mountain I Believe in You"` __(2022)__ by Big Thief
+
+## Tidyverse 
+
+- A `dialect` of R 
+- Improved `computation`
+- Improved `interpretability` 
+- More `functions`
+- Together with `Markdown`, improved reproducibility. 
+
+## Tidyverse
+
+Some packages.. 
+
+- `dplyr`
+- `ggplot2`
+- `tibble`
+- `readr`
+- `stringr`
+- `purrr`
+- ...
+
+## Tidyverse 
+
+What is it for.. 
+
+- Efficiently open `raw data`
+- Manipulate, change, visualise `data` 
+- Summarise, calculate results 
+- `Prepare` for main analysis 
+- Create `graphs and plots`
+
+# Meet the team
+
+`Did you know:` _Penguins are Excellent Walkers_  
+
+Don’t be fooled by their adorable waddling into thinking a penguin can’t achieve much on land. Many penguins can walk extremely long distances to their nests and breeding grounds across all kinds of terrain.
+
+## `readr`
+
+::: {.fragment .fade-up}
+We use `readr` primarily to 
+:::
+
+- `Read` .csv / .txt files
+- `Write` .csv / .txt files
+
+. . .
+
+For example: 
+
+```{r}
+#| eval: false
+#| echo: true
+library(readr)
+data <- read_csv("my_file.csv")
+
+# ...
+
+wrte_csv(data, "my_file.csv")
+```
+
+## `{dplyr}`
+
+::: {.fragment .fade-up}
+We will use `{dplyr}` the most. We will
+:::
+
+- `filter()`
+- `mutate()`
+- `select()`
+- `group_by()` and `summarise()`
+- `rename()`
+- ...
+
+## `{ggplot2}`
+
+::: {.fragment .fade-up}
+`{ggplot2}` is a very powerful graphical tool
+:::
+
+```{r}
+#| include: false
+library(palmerpenguins)
+library(ggdark)
+```
+
+```{r}
+#| warning: false
+#| message: false
+penguins %>% ggplot(aes(x = bill_length_mm, y = bill_depth_mm, col = species, shape = species)) +
+  geom_point(alpha = 0.6, size = 2) + dark_theme_bw() +
+  scale_color_viridis_d(option = "viridis") + 
+  xlab("Bill Length (mm)") +
+  ylab("Bill Depth (mm)")
+```
+
+# `{dplyr}`
+
+## `select()`
+
+::: {.fragment .fade-up}
+Choose columns to keep / drop in / from the data set
+:::
+
+```{r}
+#| echo: true
+library(palmerpenguins)
+penguins_2 <- select(penguins, bill_length_mm, species)
+head(penguins_2)
+```
+
+## `select()`
+
+::: {.fragment .fade-up}
+Other ways to select
+:::
+
+```{r}
+#| eval: false
+#| echo: true
+penguins_2 <- select(penguins, 1, 3, 5)
+
+penguins_2 <- select(penguins, 1:4)
+
+penguins_2 <- select(penguins, -2, -5)
+
+penguins_2 <- select(penguins, 1:5, -3)
+
+penguins_2 <- select(penguins, -(1:5))
+```
+
+## `filter()`
+
+::: {.fragment .fade-up}
+Keep rows that match a `condition` i.e. if-then
+:::
+
+```{r}
+#| echo: true
+unique(penguins$species)
+penguins_2 <- filter(penguins, species == "Gentoo")
+unique(penguins_2$species)
+```
+
+. . .
+
+```{r}
+#| echo: true
+penguins_2 <- filter(penguins, species != "Gentoo")
+unique(penguins_2$species)
+```
+. . .
+
+```{r}
+#| echo: true
+penguins_2 <- filter(penguins, species == "Gentoo" | species == "Chinstrap")
+unique(penguins_2$species)
+```
+
+## `rename()`
+
+```{r}
+#| echo: true
+penguins_2 <- rename(penguins, Type = species)
+```
+
+. . .
+
+```{r}
+#| echo: true
+penguins_2 <- select(penguins, Type = species, bill_length_mm)
+```
+
+## `mutate()`
+
+::: {.fragment .fade-up}
+With `mutate()`, we affect the `content` of our data set. For example
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+penguins_2 <- mutate(penguins, 
+                     bill_length_m = bill_length_mm * 1000, 
+                     species = as.factor(species))
+```
+
+## `mutate()`
+
+Different variations of `mutate()` are available: 
+
+- `mutate_if()`
+- `mutate_all()`
+
+# Ceci n'est pas une `%>%`
+
+## Ceci n'est pas une `%>%`
+
+::: {.fragment .fade-up}
+`%>%` is called a __pipe__
+:::
+
+. . . 
+
+When reading code aloud, you read it as __then__
+
+. . .
+
+It allows you to chain together multiple functions, without having to __repeat the object__ the function should be applied to. 
+
+## Ceci n'est pas une `%>%`
+
+::: {.fragment .fade-up}
+Let's consider this example: 
+:::
+
+. . .
+
+```{r}
+#| echo: true 
+#| eval: false 
+penguins_2 <- filter(penguins, species == "Gentoo" | species == "Chinstrap")
+penguins_3 <- mutate(penguins_2, bill_length_m = bill_length_mm * 1000)
+penguins_4 <- select(penguins_3, species, bill_length_m)
+```
+
+## Ceci n'est pas une `%>%`
+
+::: {.fragment .fade-up}
+With the pipe, we can: 
+:::
+
+. . .
+
+```{r}
+#| echo: true 
+#| eval: false 
+penguins_2 <- penguins %>% 
+  filter(species == "Gentoo" | species == "Chinstrap") %>% 
+  mutate(bill_length_m = bill_length_mm * 1000) %>% 
+  select(penguins_3, species, bill_length_m)
+```
+
+. . .
+
+`PRO TIP!`
+
+```{r}
+#| echo: true 
+#| eval: false 
+penguins %>% 
+  filter(species == "Gentoo" | species == "Chinstrap") %>% 
+  mutate(bill_length_m = bill_length_mm * 1000) %>% 
+  select(penguins_3, species, bill_length_m) -> penguins_2
+```
+
+These two code blocks share the exact same output
+
+::: {.fragment .fade-up}
+Saving "to the right" can increase interpretability and readability
+:::
+
+## Ceci n'est pas une `%>%`
+
+Take `penguins`, `then` `filter` only the `species` Gentoo `or` Chinstra and `then`, `mutate` the output to include a new column `bill_length_m` which multiplies the existing `bill_length_mm` by `1000`. `Then`, only `select` columns `species` and `bill_length_m`. Finally, save the final output into the variable `penguins_2`.

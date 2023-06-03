@@ -1,0 +1,112 @@
+---
+title: "lecture-06-exercises"
+author: "Massimiliano Canzi"
+date: "17/05/2021"
+output: html_document
+---
+
+## Part 1
+
+```{r, message = F}
+library(dplyr)
+```
+
+Read the data set `iris` into R. the data set can be called with the `data()` function
+
+```{r}
+data(iris)
+```
+
+create a variable called `model` and fit a linear regression where: 
+
+* `Petal.Width` is the outcome variable 
+* `Species` is your predictor 
+
+```{r}
+iris %>% lm(...) -> model
+```
+
+Based on the regression model I am asking you to fit, what would you say is the.. (answer on the * lines)
+
+research question? 
+
+* 
+
+What would you say is a reasonable hypothesis?
+
+* 
+
+..and the null hypothesis? 
+
+* 
+
+We use `lm` to combine regression with inferential statistics to 
+
+* model the variance and the distribution of our data (through regression)
+* test our hypothesis (_t_ statistic and _p_ values)
+
+Below, display the summary of the model:
+
+```{r}
+
+```
+
+Now install package `report`
+
+```{r, eval = F}
+install.packages("report")
+```
+
+```{r}
+library(report)
+```
+
+Use the `report()` function on the model to learn more about your regression model
+
+```{r}
+
+```
+
+What does adjusted _R squared_ suggest, in our particular case? Is the model a good fit for the data?
+
+*
+
+Why are there two slopes (i.e. `Speciesversicolor` and `Speciesvirginica`) but no `setosa`? 
+
+* 
+
+Can you plot and visually inspect the residuals?
+
+```{r}
+
+```
+
+## Part 2
+
+Now fit a similar model but adding `Petal.Length` as the second predictor of your model
+
+```{r}
+iris %>% lm(...) -> model2
+```
+
+And display the summary
+
+```{r}
+
+```
+
+What would you say are the major differences between the two models?
+
+* 
+
+BONUS QUESTION (Optional)
+
+We have not yet talked about interactions in linear models, but if you are familiar with what an interaction is.. 
+
+Fit the previous model adding an interaction between Species and Petal.length. Discuss the results. 
+
+```{r}
+iris %>% lm(...) -> model3
+```
+
+* 
