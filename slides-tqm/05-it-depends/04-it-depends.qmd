@@ -60,6 +60,10 @@ The fixed effects are interpreted similarly to the coefficients in linear regres
 
 For example, a larger random effect for `Student` in our earlier example would indicate that there is substantial variation in test scores between students, even after accounting for study time.
 
+# Different interpretations
+
+`Did you know:` _A group of penguins in the water is called a raft but on land they're called a waddle!_
+
 ## Different interpretations of RE
 
 (From a post by Stefano Coretta) 

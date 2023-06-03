@@ -67,6 +67,10 @@ The standard error is __s / sqrt(N)__
 
 You can use standard error to compute confidence intervals (or CI) 
 
+# NHST
+
+`Did you know:` _Gannets have excellent binocular vision which allows them to spot fish while hovering over the water; once they have spotted their prey they will fold in their wings and dive from a height of up to 40m, reaching speeds of up to 100kmph._
+
 ## __NHST__
 
 Whenever you are conducting original, scientific research, you usually have at least one: 
@@ -109,6 +113,12 @@ t-test formula:
 ## using __t__ for determining _p_
 
 <img src="tdist.png">
+
+# Power and multiple testing 
+
+Did you know about.. [The Life and Death of Nigel, the World’s Loneliest Seabird](https://www.nytimes.com/2018/02/04/world/asia/nigel-gannet-mana-island.html)
+
+Bonus: __The Burning Hell - "Nigel the Gannet"__
 
 ## Downsides of Multiple Testing
 

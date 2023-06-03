@@ -35,6 +35,8 @@ library(ggdark)
 
 # More?
 
+`Did you know:` _Orangutans have an arm span of about 2.2 m from fingertip to fingertip. Considering their standing height is around 1. 5 m, this is an impressive reach. Their arms are so long in fact that they’re one and a half times longer than their legs and stretch to their ankles when standing._ 
+
 ## Multiple regression
 
 **Multiple regression** is a statistical technique that allows us to predict a single, continuous outcome variable on the basis of more than one predictor variable.
@@ -75,6 +77,10 @@ For example:
 - Choose a 'contrast' level that you want to compare against the reference level. This will typically be coded as 1.
 
 Other types of coding...
+
+# Interactions 
+
+`Did you know:` _It's estimated that over 100,000 Bornean orangutans were lost between 1999 and 2015. The main threat is the loss or fragmentation of their forest habitat, caused by logging for timber materials, forest fires and making way for oil palm plantations._
 
 # Interactions in Multiple Regression 
 

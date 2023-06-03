@@ -73,7 +73,8 @@ https://discord.gg/DVe35Z6sn8
 
 ## Book 
 
-Winter, B. (2019). `Statistics for linguists: An introduction using R`. Routledge.
+- Winter, B. (2020). `Statistics for linguists: An introduction using R`. Routledge.
+- Slides are supposed to work simply as a guideline -- most detailed content is found in the book.
 
 ## The meat and potatoes
 
