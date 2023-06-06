@@ -10,6 +10,7 @@ Chinstrap penguins, named for the thin black band under their heads which appear
 
 Gentoo penguins are another fascinating species found primarily on the Antarctic Peninsula and various sub-Antarctic islands. Recognized by their bright orange bills and a distinctive white patch above their eyes, these penguins are the third-largest penguin species. They are the fastest underwater swimmers among penguins, reaching speeds up to 22 mph. Gentoos primarily feed on krill and fish. Unlike other species, Gentoo penguins often stay close to their breeding colonies throughout the year. Their unique high-pitched vocalization, often compared to a trumpet, can be heard echoing through their environment.
 
+
 ```{r}
 #| include: false
 library(car)
@@ -36,60 +37,47 @@ Conceptually:
 First step: let's visualise things! 
 
 ```{r}
-penguins %>% ggplot(...)
+#| message: false
+#| warning: false
+penguins %>% ggplot(aes(x = bill_depth_mm, 
+                        y = bill_length_mm)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
 ```
 
 ```{r}
-penguins %>% ggplot(...)
-```
-
-```{r}
-penguins %>% ggplot(...)
+#| message: false
+#| warning: false
+penguins %>% ggplot(aes(x = bill_depth_mm, 
+                        y = bill_length_mm, 
+                        col = species)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
 ```
 
 Practically: 
 
 ```{r}
-model_1 <- lm(..., data = penguins)
-```
-
-Practically: 
-
-```{r}
-model_2 <- lm(..., data = penguins)
+model_1 <- lm(bill_length_mm ~ bill_depth_mm * species, data = penguins)
+plot_model(model_1, type = "pred", 
+           terms = c("bill_depth_mm", "species"))
 ```
 
 Report of our model: 
 
 ```{r}
+#report(sessionInfo())
 report(model_1)
 ```
 
 ```{r}
-report(model_1)
+summary(model_1)
 ```
-
 
 How good are our models?
 
 ```{r}
-drop1(model_1)
-```
-
-```{r}
-drop1(model_2)
-```
-
-... 
-
-Let's visualise the effects: 
-
-```{r}
-plot_model()
-```
-
-```{r}
-plot_model()
+drop1(model_1, test = "Chisq")
 ```
 
 Now you are ready to write up your results: 
