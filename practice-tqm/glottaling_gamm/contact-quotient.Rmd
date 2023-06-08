@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = normalizePath("../"))
+knitr::opts_knit$set(root.dir = normalizePath(""))
 library(tidyverse)
 theme_set(theme_minimal())
 library(mgcv)
@@ -54,17 +54,42 @@ contrasts(cq$cons_pos) <- "contr.treatment"
 
 ```{r cq-gam}
 cq_gam_2 <- bam(
-  cq ~
-
+  cq ~ cons_pos + 
+    s(proportion) + 
+    s(proportion, by = cons_pos) + 
+    s(log_frequency) + 
+    ti(proportion, log_frequency) +
+    ti(proportion, log_frequency, by = cons_pos) + 
+    s(proportion, speaker, bs = "fs", m = 1), 
   data = cq,
-  method = "ML"
-)
+  method = "ML")
+```
 
+```{r}
+plot_smooths(model = cq_gam_2, 
+             series = proportions, 
+             comparison = cons_pos)
+```
+
+
+```{r}
+gam.check(cq_gam_2)
+```
+
+```{r cq-gam}
 summary(cq_gam_2)
+```
 
+```{r cq-gam}
 cq_gam_2_null <- bam(
   cq ~
-    
+  #cons_pos + 
+    s(proportion) + 
+    #s(proportion, by = cons_pos) + 
+    s(log_frequency) + 
+    ti(proportion, log_frequency) +
+    #ti(proportion, log_frequency, by = cons_pos) + 
+    s(proportion, speaker, bs = "fs", m = 1),
   data = cq,
   method = "ML"
 )

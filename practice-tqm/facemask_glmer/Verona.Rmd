@@ -1,0 +1,87 @@
+---
+title: "Verona"
+author: "Massimiliano Canzi"
+date: "2023-06-08"
+output: html_document
+---
+
+```{r library, include = FALSE}
+library(car)
+library(janitor)
+library(lme4)
+library(lmerTest)
+library(sjPlot)
+library(tidyverse)
+```
+
+```{r open.file, message = F}
+read_csv("ENG.csv") %>% # i read this file in
+  separate(col = video,  # i separate the columns 
+           into = c("condition", "fricative", "mp", 
+                    "sp", "item"), 
+           sep = "_") -> data # i save my result in the variable data 
+```
+
+```{r measure.variable}
+data %>% 
+  filter(fricative != "X") %>% 
+  mutate(fricative = case_when(
+      fricative == "SS" ~ "S", 
+      fricative == "FF" ~ "F", 
+      fricative == "TH" ~ "TH", 
+      fricative == "SH" ~ "SH"), 
+    accuracy = if_else(response == fricative, "1", "0"),
+    participant_id = as.factor(participant_id),
+    item = tolower(item), 
+    merger = if_else(country == "England" | country == "Scotland", 
+                     "1", "0")) -> data2
+```
+
+```{r subtlex, include = FALSE}
+sub <- read_csv("SUBTLEX-UK.csv") %>% 
+  clean_names() %>% 
+  select(item = spelling, log_freq)
+```
+
+```{r join}
+data.final <- left_join(data2, sub, 
+                     by = "item")
+```
+
+```{r model}
+glmer(as.factor(accuracy) ~ condition * fricative +
+        log_freq + 
+        (1 | participant_id) + (1 | item), 
+      family = "binomial", 
+      control = glmerControl(optimizer = "bobyqa"), 
+      data = data.final) -> model
+```
+
+```{r summary.drop}
+summary(model)
+drop1(model, test = "Chisq")
+```
+
+```{r plot.est}
+plot_model(model, type = "est", sort.est = TRUE)
+```
+
+```{r plot.fric}
+plot_model(model, type = "pred", 
+           terms = c("fricative", "condition"))
+```
+
+```{r plot.log}
+plot_model(model, type = "pred", 
+           terms = "log_freq")
+```
+
+```{r report}
+report::report(model)
+```
+
+
+
+
+
+
