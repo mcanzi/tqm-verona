@@ -1,0 +1,391 @@
+---
+title: "Contact Quotient analysis"
+author: "Stefano Coretta and Massimiliano Canzi"
+date: "13/01/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = normalizePath("../"))
+library(tidyverse)
+theme_set(theme_minimal())
+library(mgcv)
+library(itsadug)
+library(tidymv)
+library(lmerTest)
+library(effects)
+heatmapPalette <- c('deepskyblue4', 'lightskyblue3', 'yellowgreen', 'lightgoldenrod1', 'indianred3')
+```
+
+# Read data
+
+```{r read-data, message=FALSE}
+words <- read_csv("words.csv")
+
+cq <- read_csv("tracegram.csv") %>%
+  mutate(
+    cq = minimum - maximum,
+    position = ordered(position, levels = c("medial", "final"))
+  ) %>%
+  left_join(y = words) %>%
+  mutate(
+    freq_bin = ifelse(
+      log_frequency < 4.465,
+      "low",
+      "high"
+    ),
+    vowel = as.ordered(vowel),
+    consonant_2 = ordered(consonant_2, levels = c("k", "t")),
+    cons_pos = interaction(consonant_2, position),
+    cons_pos = ordered(cons_pos)
+  ) %>%
+  mutate_if(is.character, as.factor) %>%
+  mutate(index = as.factor(index)) %>%
+  filter(cq > 0, cq < 1)
+
+contrasts(cq$position) <- "contr.treatment"
+contrasts(cq$vowel) <- "contr.treatment"
+contrasts(cq$consonant_2) <- "contr.treatment"
+contrasts(cq$cons_pos) <- "contr.treatment"
+```
+
+# GAM
+
+```{r cq-gam}
+cq_gam_2 <- bam(
+  cq ~
+
+  data = cq,
+  method = "ML"
+)
+
+summary(cq_gam_2)
+
+cq_gam_2_null <- bam(
+  cq ~
+    
+  data = cq,
+  method = "ML"
+)
+
+compareML(cq_gam_2_null, cq_gam_2)
+```
+
+```{r cq-gam-acf}
+acf_plot(resid(cq_gam_2), split_by = list(cq$index))
+```
+
+```{r cq-gam-plot}
+fvisgam(
+  cq_gam_2,
+  view = c("proportion", "log_frequency"),
+  cond = list(cons_pos = "t.medial"),
+  rm.ranef = TRUE,
+  zlim = c(0.350, 0.5),
+  cex.main = 0.85,
+  cex.lab = 0.85,
+  xlab = "Vowel propotion",
+  ylab = "Log frequency",
+  main = "CQ in vowel tokens precending sentence medial /t/",
+  color = heatmapPalette
+)
+fvisgam(
+  cq_gam_2,
+  view = c("proportion", "log_frequency"),
+  cond = list(cons_pos =  "t.final"),
+  rm.ranef = TRUE,
+  zlim = c(0.350, 0.5),
+  cex.main = 0.85,
+  cex.lab = 0.85,
+  xlab = "Vowel propotion",
+  ylab = "Log frequency",
+  main = "CQ in vowel tokens precending sentence final /t/",
+  color = heatmapPalette
+)
+```
+
+In /t/-medial position, vowels of higher-frequency words have a lower CQ than low frequency at the offset. In terms of termporal unfolding from 50% of the duration, vowels in high-frequency words have decreasing CQ (from more to less constricted), while vowels in low-frequency have increasing CQ (from less to more constricted).
+
+In /t/-final position, vowels of any frequency have decreasing CQ along their duration. The CQ starts decreasing earlier in vowels of high-frequency words than in low-frequency words.
+
+CQ is in genaral lower in /t/-final position than in /t/-medial (towards the end), so that vowels in /t/-final position have less constricted folds.
+
+```{r cq-gam-plot}
+fvisgam(
+  cq_gam_2,
+  view = c("proportion", "log_frequency"),
+  cond = list(cons_pos = "k.medial"),
+  rm.ranef = TRUE,
+  zlim = c(0.350, 0.5),
+  cex.main = 0.85,
+  cex.lab = 0.85,
+  xlab = "Vowel propotion",
+  ylab = "Log frequency",
+  main = "CQ in vowel tokens precending sentence medial /k/",
+  color = heatmapPalette
+)
+fvisgam(
+  cq_gam_2,
+  view = c("proportion", "log_frequency"),
+  cond = list(cons_pos = "k.final"),
+  rm.ranef = TRUE,
+  zlim = c(0.350, 0.5),
+  cex.main = 0.85,
+  cex.lab = 0.85,
+  xlab = "Vowel propotion",
+  ylab = "Log frequency",
+  main = "CQ in vowel tokens precending sentence final /k/",
+  color = heatmapPalette
+)
+```
+
+In /k/-medial position, vowels at their offset have a higher CQ in higher-frequency than in low-frequency words. In terms of of termporal unfolding, the CQ decreases along vowel duration (decreasing fold constriction), but in low-frequency words it decreases earlier than in high-frequency words.
+
+In /k/-final position, vowels at their offset have a slightly higher CQ in higher-frequency than in low-frequency words. In terms of of termporal unfolding from 50% of vowel duration, the CQ decreases at a faster rate in low frequency words than in high frequency words.
+
+CQ is in genaral lower in /k/-final position than in /k/-medial, so that vowels in /k/-final position have less constricted folds.
+
+```{r}
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 3.5,
+    cons_pos = "t.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  col = "goldenrod2",
+  ylim = c(0.3, 0.5),
+  n.grid = 20
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 4.5,
+    cons_pos = "t.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "deepskyblue2",
+  ylim = c(0.3, 0.5),
+  n.grid = 20
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 5.5,
+    cons_pos = "t.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "black",
+  ylim = c(0.3, 0.5),
+  n.grid = 20
+)
+```
+
+```{r}
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 4.5,
+    cons_pos = "t.medial"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  col = "goldenrod2",
+  ylim = c(0.1, 0.6),
+  n.grid = 20
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 5,
+    cons_pos = "t.medial"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "deepskyblue2",
+  ylim = c(0.1, 0.6),
+  n.grid = 20
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 5.5,
+    cons_pos = "t.medial"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "black",
+  ylim = c(0.1, 0.6),
+  n.grid = 20
+)
+```
+
+```{r}
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 4,
+    cons_pos = "k.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  col = "goldenrod2",
+  ylim = c(0.1, 0.6),
+  n.grid = 20
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 4.75,
+    cons_pos = "k.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "deepskyblue2",
+  ylim = c(0.1, 0.6),
+  n.grid = 20
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 5.5,
+    cons_pos = "k.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "black",
+  ylim = c(0.1, 0.6),
+  n.grid = 20
+)
+```
+
+```{r}
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 4,
+    cons_pos = "t.medial"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  col = "goldenrod2",
+  ylim = c(0, 1),
+  n.grid = 20,
+  main = "t-words in sentence-medial (orange) and sentence-final (blue)"
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 4,
+    cons_pos = "t.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "deepskyblue2",
+  ylim = c(0, 1),
+  n.grid = 20
+)
+```
+
+```{r}
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 3.5,
+    cons_pos = "t.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  col = "goldenrod2",
+  ylim = c(0.3, 0.55),
+  n.grid = 20,
+  main = "Sentence-final t-words (orange = low, blue = high)"
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 6,
+    cons_pos = "t.final"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "deepskyblue2",
+  ylim = c(0.3, 0.55),
+  n.grid = 20
+)
+```
+
+```{r}
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 3.5,
+    cons_pos = "t.medial"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  col = "goldenrod2",
+  ylim = c(0.3, 0.6),
+  n.grid = 20,
+  main = "Sentence-medial t-words (orange = low, blue = high)"
+)
+plot_smooth(
+  cq_gam_2,
+  "proportion",
+  cond = list(
+    log_frequency = 6,
+    cons_pos = "t.medial"
+  ),
+  rm.ranef = TRUE,
+  rug = FALSE,
+  add = TRUE,
+  col = "deepskyblue2",
+  ylim = c(0.3, 0.6),
+  n.grid = 20
+)
+```
+
+# LMER
+
+```{r}
+cq_lmer <- lmer(
+  cq ~
+    position *
+    consonant_2 *
+    log_frequency +
+    (1|word),
+  data = cq
+)
+summary(cq_lmer)
+```
+
+```{r}
+plot(allEffects(cq_lmer))
+```
+
