@@ -13,7 +13,6 @@ format:
     controls: true
     theme: theme-mc.scss
     incremental: true
-    footer: "`massimiliano.canzi@uni-konstanz.de` | Room G114, **Universität Konstanz**. Universitätstr. 10, 78467 Konstanz DE"
 ---
 
 ```{r}
