@@ -13,7 +13,7 @@ format:
     controls: true
     theme: theme-mc.scss
     incremental: true
-    footer: "`massimiliano.canzi@uni-konstanz.de` | Room G114, **Universität Konstanz**. Universitätstr. 10, 78467 Konstanz DE"
+    footer: ""
 ---
 
 ```{r}
@@ -23,6 +23,33 @@ library(gganimate)
 library(tidyverse)
 library(ggdark)
 ```
+
+# Course evaluations 
+
+## Examples
+
+- I really liked the lecturer. He was extremely helpful and very well organized
+- This course is the proof that PHD graduates should not be given teaching positions
+- good explanation of more difficult concepts (+ a good bit of humor)
+- ...Quit?
+- I like the teacher, he is nice
+- I do not think the professor should be allowed to teach this class
+
+## Constructive Feedback
+
+- It’s a bit too fast for such a complex subject. It would help a lot if the lectures were video taped because it helps a lot to listen to a lecture again in case something was unclear. 
+- We are encouraged to ask questions but because we go so fast theough the materials the only questions I can think of are "can you repeat everything you just said and explain it all”
+- I like the combination of lecture, tutorial and book - it fits well together! It's good, that you always encourage us to ask questions and come to the office hours - I feel like you really want to help us :)
+
+## Constuctive Feedback
+
+- I found the midterm quite challenging for me. I would attribute this to not having a lot of relevant practice beforehand. If we can receive similar exercises and answers and feedbacks on our answers, it would be a lot more useful for us to understand the content and concepts
+
+
+## Other (and fun)
+
+- I wish the video wasn't uploaded on Fridays so I wouldn't have to have a bad conscience procrastinating it over the weekend.
+
 
 # From Linear Regression to Linear Mixed Effects Models
 

@@ -1,0 +1,169 @@
+---
+title: "Hypothesis Testing"
+author: "Dr Massimiliano Canzi"
+format: 
+  revealjs:
+    transition-speed: fast
+    transition: fade
+    background-transition: fade
+    chalkboard: true
+    slide-number: true
+    show-slide-number: print
+    touch: true
+    controls: true
+    theme: theme-mc.scss
+    incremental: true
+    footer: ""
+---
+
+```{r}
+#| include: false
+library(palmerpenguins)
+library(tidyverse)
+```
+
+## Inferential statistics
+
+- We talked about __descriptive statistics__ 
+- We talked about __regression modelling__ 
+
+What is _inferential statistics_?
+
+## Inferential statistics
+
+<img src="sampop.png">
+
+## Inferential statistics
+
+- Canonical definition
+- __expanded__ definition
+
+## Hypothesis testing 
+
+__NHST__: Null Hypothesis Significance Testing
+
+- Grounded in frequentist statistics
+- Long-run effects e.g. coin flip has _p_ = 0.5
+
+## __NHST__
+
+Whenever you are conducting original, scientific research, you usually have at least one: 
+
+- research question
+- hypothesis
+
+## Research question
+
+A __research question__ is the focus of your study e.g. 
+
+- Does lexical frequency impact word reading response times?
+
+## Hypotheses 
+
+The predicted -- based on previous findings -- outcome of your study e.g.
+
+- __H1__: changes in lexical frequency impact word reading times. 
+
+## Null hypothesis
+
+Every every hypothesis -- can be matched to a corresponding null hypothesis. In the example from thee slides, the null hypothesis (or __H0__) would be: 
+
+- __H0__: changes in lexical frequency do not impact reading times.
+
+## Hypothesis testing
+
+The goal of scientific studies is to determine whether the null hypothesis can be rejected. The null hypothesis acts as the default option until evidence is presented that suggests otherwise. 
+
+While modelling (i.e. descriptive statistics, regression) can help us determine the extent to which a distribution changes as a function of a predictor, there are tests that can be combined with regression to determine whether the effect of the predictor on our outcome variable can be deemed __statistically significant__ 
+
+## Hypothsis testing
+
+__test statistics__ such as _t_ (t-test) can be used to determine the incompatibility of the data with the null hypothesis e.g. whether the __null hypothesis can be rejected__ 
+
+## Effect (size)
+
+- __The magnitude of a difference__: All else being equal, the bigger the difference between two groups, the more you should expect there to be a difference in the population. 
+- __The variability in the data__: All else being equal, the less variability there is within the sample, the more cer tain you can be that you have estimated a difference accurately. 
+- __The sample size__: All else being equal, bigger samples allow you to measure differences more accurately.
+
+## Effect size
+
+In order to address the first point, the __magnitude of the effect__, we introduce Cohen's _d_
+
+__Cohen's d__ is simply the difference of the two sample means divided by the overall standard deviation.
+
+- Combines point 1 and 2
+- In a way, Cohen's d is comparable to signal-to-noise ratio
+
+## Standard error 
+
+To account for sample size (which is not accounted for in Cohen's d) we can talk about __standard error__ 
+The standard error is __s / sqrt(N)__
+
+You can use standard error to compute confidence intervals (or CI) 
+
+# and now...
+
+`Did you know:` _Gannets have excellent binocular vision which allows them to spot fish while hovering over the water; once they have spotted their prey they will fold in their wings and dive from a height of up to 40m, reaching speeds of up to 100kmph._
+
+## t test
+
+t-test formula: 
+
+<img src="ttest.png">
+
+## using __t__ for determining _p_
+
+<img src="tdist.png">
+
+# Power and multiple testing 
+
+Did you know about.. [The Life and Death of Nigel, the World’s Loneliest Seabird](https://www.nytimes.com/2018/02/04/world/asia/nigel-gannet-mana-island.html)
+
+Bonus: __The Burning Hell - "Nigel the Gannet"__
+
+## Downsides of Multiple Testing
+
+- *Multiple testing* refers to the repeated testing of hypotheses. 
+- Often used in research settings where there are large datasets.
+- It has its fair share of drawbacks that we must be aware of.
+
+## False Positives – Type I Error
+
+- One major downside is the *increase in false positives* (Type I errors).
+- The more tests we perform, the higher the chance of incorrectly rejecting a true null hypothesis.
+- This phenomenon can lead to **false discoveries** and misinterpretation of data.
+
+## False Negatives – Type II Error
+
+- Multiple testing can also lead to *increased false negatives* (Type II errors).
+- In trying to avoid Type I errors, we might fail to reject false null hypotheses.
+- This could lead to **missed discoveries** and underestimation of significant relationships.
+
+## One Example Solution: __Bonferroni Correction__
+
+- A popular method to control the false positive rate is the **Bonferroni correction**.
+- This adjusts the significance level (α) by dividing it by the number of tests.
+- The correction, however, can be too strict and increase the risk of Type II errors.
+
+## Other Solutions
+
+- Other solutions include **False Discovery Rate (FDR) controlling procedures**.
+- **Holm's method** is another alternative that's less conservative than Bonferroni.
+- Methods like the **Benjamini-Hochberg procedure** strike a balance between Type I and Type II errors.
+
+Remember: Always consider the **context and potential impact of errors** when choosing a method!
+
+## **Correctly Powered Studies**
+
+- A study is said to be *correctly powered* when it is designed with a sufficient sample size to detect an effect of a given size.
+- The power of a test is the probability that it correctly rejects the null hypothesis when the alternative hypothesis is true.
+- A well-powered study **reduces the risk of Type II errors**, leading to reliable and reproducible results.
+- **Power analysis** can be conducted beforehand to determine the required sample size.
+
+## **Underpowered Studies**
+
+- An *underpowered study* has a low probability of detecting an effect, if it exists.
+- This increases the risk of a **Type II error** - failing to reject a false null hypothesis.
+- Underpowered studies can lead to wasted resources, unethical research (particularly in medical and psychological fields), and contribute to the **"replication crisis"**.
+- Also, they can potentially result in misleading findings if they are part of multiple testing investigations without proper correction methods.

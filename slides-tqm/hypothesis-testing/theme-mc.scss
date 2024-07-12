@@ -1,0 +1,23 @@
+/*-- scss:defaults --*/
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic,700italic);
+
+// fonts
+$font-family-sans-serif: "Open Sans", sans-serif !default;
+
+// colors
+$body-bg: #223430 !default;
+$body-color: #ece4df !default;
+$link-color: #9cc9ad !default;
+$selection-bg: #9cc9ad !default;
+$input-panel-bg: rgba(233, 236, 239, 0.2) !default;
+$code-color: #bc94ba !default;
+$presentation-heading-color: #8aa8b2 !default;
+
+
+// headings
+$presentation-heading-font: "Open Sans", Impact, sans-serif;
+$presentation-heading-letter-spacing: -0.03em;
+
+// code blocks
+$code-block-border-color: rgba(233, 236, 239, 0.5) !default;
