@@ -23,8 +23,6 @@ library(tidyverse)
 
 # Introduction
 
-<img src="qr2.png">
-
 ## Who
 
 Dr Massimiliano (__Max__) Canzi
@@ -53,23 +51,8 @@ Dr Massimiliano (__Max__) Canzi
 
 Slides are made in `RStudio`, using `Quarto` and `RevealJS`
 
-. . .
-
-On GitHub, you can find:   
-
-https://github.com/mcanzi/tqm-verona  
-
 - The `slides` (as a .html file)
 - The `code` for the slides (as a .qmd file, if applicable)
-- Extra `exercises`, data sets 
-
-## Resources
-
-- You can join the `Discord` server through the link below:
-- Use the `homework-help` channel for any content-related question first. 
-- Use other channels too to keep up-to-date. 
-
-https://discord.gg/DVe35Z6sn8  
 
 ## Book 
 
@@ -80,38 +63,6 @@ https://discord.gg/DVe35Z6sn8
 
 - R
 - RStudio
-- Quarto 
-
-## `swirl` 
-
-`swirl` is an `R` package that teaches you to use `R`.. in `R`. You can learn more at the project homepage [__here__](https://swirlstats.com/students.html). You install `swirl` like you install any other `R` package. You need to do this only once. 
-
-```{r}
-#| eval: false
-#| echo: true
-install.packages("swirl")
-```
-
-To use `swirl` when you open __RStudio__, import the package and start a new `swirl` session. 
-
-```{r}
-#| eval: false
-#| echo: true
-library(swirl)
-swirl()
-```
-
-## `swirl`
-
-The `swirl` package contains dozens of interactive tutorials for learning `R`, from more basic exercises to more complex modelling tasks. You will be given specific tutorials to complete as part of your homework. You are very encouraged to complete these tasks and explore more on your own. 
-
-## `tidyverse`
-
-`tidyverse` is a new _dialect_ of `R` _(the standard variety being base `R`)_
-
-. . .
-
-`tidyverse` is a series of `R` packages and functions created by [__H. Wickham__](https://twitter.com/hadleywickham) and colleagues that substitute many of the base `R` alternatives, while at the same time being easier to write, read and reproduce. However, there is no way around knowing the basics of base `R` before we dive into the `tidyverse`. 
 
 # Quant Methods?
 
@@ -130,7 +81,7 @@ Discuss...
 
 - Acquire `fundamental concepts` to conduct statistical analyses (in R.)  
 - Learn fundamental concepts of `regression modelling`
-- Learn to apply the above to `real linguistic data`
+- Learn to (losely) apply the above to `real linguistic data`
 - Maybe some extra stuff if we have time? Who knows
 
 ## And now
