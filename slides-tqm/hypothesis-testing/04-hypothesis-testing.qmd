@@ -120,8 +120,6 @@ t-test formula:
 
 Did you know about.. [The Life and Death of Nigel, the World’s Loneliest Seabird](https://www.nytimes.com/2018/02/04/world/asia/nigel-gannet-mana-island.html)
 
-Bonus: __The Burning Hell - "Nigel the Gannet"__
-
 ## Downsides of Multiple Testing
 
 - *Multiple testing* refers to the repeated testing of hypotheses. 
